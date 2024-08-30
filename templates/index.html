@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %}Solver{% endblock %}
+
+{% block content %}
+    <h1>Sudoku Solver</h1>
+    <p>Enter an incomplete sudoku puzzle, and this tool will solve it!</p>
+
+    <form method="POST" action="/solve" id="sudoku-form">
+        <table class=sudoku-table>
+            {% for row in range(9) %}
+            <tr>
+                {% for col in range(9) %}
+                <td>
+                    {% if sudoku_grid %}
+                        {% if user_entries[row][col] is not none %}
+                            <!-- Entered by the user -->
+                            <input type="text" name="cell-{{ row }}-{{ col }}" value="{{ user_entries[row][col] }}" maxlength="1" class="sudoku-cell">
+                        {% else %}
+                            <!-- Entered/Solved by the algorithm -->
+                             <input type="text" name="cell-{{ row }}-{{ col }}" value="{{ sudoku_grid[row][col] }}" maxlength="1" class="sudoku-cell solved-cell">
+                        {% endif %}
+                    {% else %}
+                        <input type="text" name="cell-{{ row }}-{{ col }}" maxlength="1" class="sudoku-cell">
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary mt-3">Solve!</button>
+            <button type="button" class="btn btn-secondary mt-3" onClick="resetGrid()">Refresh</button>
+        </div>
+    </form>
+
+    <script>
+        // Function to clear the sudoku table so the user can enter multiple puzzles without closing the page
+        function resetGrid(){
+            var cells = document.querySelectorAll('.sudoku-cell');
+            cells.forEach(function(cell){
+                cell.value = '';
+                cell.classList.remove('solved-cell');
+            });
+        }
+    </script>
+{% endblock %}
